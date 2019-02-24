@@ -22,30 +22,6 @@
 	body { height: 100%; margin: 0; padding: 0 }
 	div { margin: 0px }
 	#map_canvas { height: 75% }
-
-	div.bar
-	{
-		display: inline-block;
-		width: 20px;
-		height: 75px;	/* Gets overriden by D3-assigned height below */
-		background-color: teal;
-	}
-
-	path
-	{
-		stroke: steelblue;
-		stroke-width: 2;
-		fill: none;
-	}
-
-	.axis path,
-	.axis line
-	{
-		fill: none;
-		stroke: #000;
-		stroke-width: 1;
-		shape-rendering: crispEdges;
-	}
 </style>
 
 <body>
@@ -57,11 +33,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js" integrity="sha256-/SzuLhIQJr2lXrXlvjX3aLOEEt2UkhqSc8mmYblwqwc=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 <script type="text/javascript">
-	var contentString
-	var routePath
 	var map
-	var marker = null
-	var infoWindow = null
 
 	function escapeRegExp(str)
 	{
@@ -94,26 +66,13 @@
 			displayProjection: new OpenLayers.Projection("EPSG:4326")
 		} );
 
-		// Add the Layer with the GPX Track
-		var lgpx = new OpenLayers.Layer.Vector("", {
-			strategies: [new OpenLayers.Strategy.Fixed()],
-			protocol: new OpenLayers.Protocol.HTTP({
-				url: "${root_url}/api/1.0/export_activity?activity_id=${activityId}&export_format=gpx",
-				format: new OpenLayers.Format.GPX()
-			}),
-			style: {strokeColor: "red", strokeWidth: 3, strokeOpacity: 0.75},
-			projection: new OpenLayers.Projection("EPSG:4326")
-		});
-		map.addLayer(lgpx);
-
 		// Define the map layer
 		map.addLayer(new OpenLayers.Layer.OSM.Mapnik("Mapnik"));
 
 		// Start position for the map (hardcoded here for simplicity,
 		// but maybe you want to get this from the URL params)
-		var zoom = 13;
 		var lonLat = new OpenLayers.LonLat(0.0, 0.0).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-		map.setCenter(lonLat, zoom);
+		map.setCenter(lonLat, 1);
 	}
 
 	initialize();
