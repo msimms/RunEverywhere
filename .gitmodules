@@ -1,0 +1,6 @@
+[submodule "stravalib"]
+	path = stravalib
+	url = https://github.com/hozn/stravalib
+[submodule "LibMath"]
+	path = LibMath
+	url = https://github.com/msimms/LibMath
