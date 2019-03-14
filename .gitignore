@@ -36,3 +36,7 @@ MANIFEST
 # Flask stuff:
 instance/
 .webassets-cache
+
+# Temp directories
+tempfile/
+tempmod/
