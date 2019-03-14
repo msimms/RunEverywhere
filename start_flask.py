@@ -111,6 +111,28 @@ def index():
         result = g_backend.error()
     return result
 
+@g_flask_app.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+    """Renders sitemap.xml. Makes a list of urls and date modified."""
+    try:
+        urls = []
+
+        for rule in g_flask_app.url_map.iter_rules():
+            if "GET" in rule.methods and len(rule.arguments) == 0:
+                urls.append(str(rule.rule))
+
+        sitemap_xml = g_backend.sitemap(urls)
+        response = flask.make_response(sitemap_xml)
+        response.headers["Content-Type"] = "application/xml"
+        code = 200
+    except Exception as e:
+        response = str(e.args[0])
+        g_backend.log_error(response)
+        code = 500
+    except:
+        code = 500
+    return response, code
+
 def main():
     """Entry point for the flask version of the app."""
     global g_backend

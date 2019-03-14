@@ -57,3 +57,16 @@ class App(object):
         api = Api.Api(self.tempfile_dir, user_id, self.root_url)
         handled, response = api.handle_api_1_0_request(method, params)
         return handled, response
+
+    def sitemap(self, urls):
+        """Renders sitemap.xml. Makes a list of urls and date modified."""
+        url_descriptions = ""
+
+        for url in urls:
+            url_descriptions += "<url>"
+            url_descriptions += "<loc>" + self.root_url + url + "</loc>"
+            url_descriptions += "</url>"
+
+        sitemap_xml_file = os.path.join(self.root_dir, HTML_DIR, 'sitemap.xml')
+        my_template = Template(filename=sitemap_xml_file, module_directory=self.tempmod_dir)
+        return my_template.render(urls=url_descriptions)
