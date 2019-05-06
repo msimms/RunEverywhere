@@ -22,6 +22,11 @@ class Api(object):
         logger = logging.getLogger()
         logger.debug(log_str)
 
+    def handle_connect_to_strava(self, values):
+        pass
+
     def handle_api_1_0_request(self, request, values):
         """Called to parse a version 1.0 API message."""
+        if request == 'connect_to_strava':
+            return self.handle_connect_to_strava(values)
         return False, ""
