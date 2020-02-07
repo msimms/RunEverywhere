@@ -5,8 +5,8 @@
 
 <title>Run Everywhere</title>
 
-<link rel="stylesheet" type="text/css" href="${root_url}/css/normalize.css">
-<link rel="stylesheet" type="text/css" href="${root_url}/css/site.css">
+<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+<link rel="stylesheet" type="text/css" href="../css/site.css">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.css" />
 
 <meta charset="UTF-8">
@@ -14,7 +14,7 @@
 <meta name="keywords" content="location summary">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 
-<link rel="shortcut icon" href="${root_url}/media/favicon.ico" >
+<link rel="shortcut icon" href="media/favicon.ico" >
 
 </head>
 
@@ -26,8 +26,6 @@
 </style>
 
 <body>
-
-<div class="map_canvas" id="map_canvas">
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
@@ -117,18 +115,29 @@
         draw_region(canvas, ctx, region_objects, canadian_provinces, -20.0, -50.0, 3.0, 3.4);
     }
 
-    var draw_canada_map = function(region_objects)
-    {
-        var canvas = document.getElementById("canadaCanvas");
-        var ctx = canvas.getContext("2d");
-        draw_region(canvas, ctx, region_objects, canadian_provinces, -90.0, 0.0, 3.5, 3.5);
-    }
-
     function get_map_data()
     {
-		$.ajax({ type: 'GET', url: "${root_url}/data/world.geo.json", cache: false, success: draw_world_map, dataType: "json" });
-		$.ajax({ type: 'GET', url: "${root_url}/data/us_states.geo.json", cache: false, success: draw_us_map, dataType: "json" });
-		$.ajax({ type: 'GET', url: "${root_url}/data/canada.geo.json", cache: false, success: draw_canada_map, dataType: "json" });
+        var mapStore = {world:null, us:null, canada:null}; 
+
+        $.when(
+            $.get("../data/world.geo.json", function(world) {
+                mapStore.world = world;
+            }),
+            $.get("../data/us_states.geo.json", function(us) {
+                mapStore.us = us;
+            }),
+            $.get("../data/canada.geo.json", function(canada) {
+                mapStore.canada = canada;
+            }),
+        ).then(function() {
+            var canvas = document.getElementById("usCanadaCanvas");
+            var ctx = canvas.getContext("2d");
+            draw_region(canvas, ctx, region_objects, mapStore.us, -20.0, -50.0, 3.0, 3.4);
+            draw_region(canvas, ctx, region_objects, mapStore.canada, -20.0, -50.0, 3.0, 3.4);
+        });
+//		$.ajax({ type: 'GET', url: "../data/world.geo.json", cache: false, success: draw_world_map, dataType: "json" });
+//		$.ajax({ type: 'GET', url: "../data/us_states.geo.json", cache: false, success: draw_us_map, dataType: "json" });
+//		$.ajax({ type: 'GET', url: "../data/canada.geo.json", cache: false, success: draw_canada_map, dataType: "json" });
     }
 
     var process_heat_map = function(heat_map)
@@ -169,16 +178,23 @@
 
     function get_heat_map_data()
     {
-		$.ajax({ type: 'GET', url: "${root_url}/api/1.0/get_location_summary", cache: false, success: process_heat_map, dataType: "json" });
+		$.ajax({ type: 'GET', url: "http://192.168.1.107:8080/api/1.0/get_location_summary", cache: false, success: process_heat_map, dataType: "json" });
     }
 
     get_heat_map_data();
 </script>
 
+<div align="center">
+    <canvas id="worldCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
+    Your browser does not support the canvas element.
+    </canvas>
+    <canvas id="usCanadaCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
+    Your browser does not support the canvas element.
+    </canvas>
 </div>
 
 <div align="center">
-    <a href="${root_url}/api/connect_to_strava"><img src="${root_url}/images/connect_to_strava.png" width="256"></a>
+    <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
 </div>
 
 </body>
