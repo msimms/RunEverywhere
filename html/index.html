@@ -41,7 +41,7 @@
 
     function draw_coordinate_list(canvas, ctx, coordinate_list, x_offset, y_offset, x_scale, y_scale)
     {
-        is_first = true;
+        var is_first = true;
         ctx.beginPath();
         for (coordinate of coordinate_list)
         {
@@ -63,7 +63,7 @@
 
     function draw_geo_polygon(canvas, ctx, polygon_objects, x_offset, y_offset, x_scale, y_scale)
     {
-        for (coordinate_list of polygon_objects)
+        for (var coordinate_list of polygon_objects)
         {
             draw_coordinate_list(canvas, ctx, coordinate_list, x_offset, y_offset, x_scale, y_scale);
         }
@@ -71,9 +71,9 @@
 
     function draw_region(canvas, ctx, region_objects, heat_map, x_offset, y_offset, x_scale, y_scale)
     {
-        for (region_object of region_objects.features)
+        for (var region_object of region_objects.features)
         {
-            name = region_object.properties.name;
+            var name = region_object.properties.name;
             if (heat_map.indexOf(name) == -1)
                 ctx.fillStyle = '#c3c3c3';
             else
@@ -160,7 +160,7 @@
 
     function get_heat_map_data()
     {
-		$.ajax({ type: 'GET', url: "http://192.168.1.107:8080/api/1.0/get_location_summary", cache: false, success: process_heat_map, dataType: "json" });
+		$.ajax({ type: 'GET', url: "http://127.0.0.1:8080/api/1.0/get_location_summary", cache: false, success: process_heat_map, dataType: "json" });
     }
 
     get_heat_map_data();
