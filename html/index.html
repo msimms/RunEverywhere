@@ -24,10 +24,14 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
 
 <script>
+    var connected_to_strava = false;
+    var connected_to_straen_app = false;
     var countries = [];
     var us_states = [];
     var canadian_provinces = [];
 
+    /// @function latlon_to_xy
+    /// Converts latitude and longitude to an x, y coordinate on the specified canvas.
     function latlon_to_xy(canvas, lat, lon, x_offset, y_offset, x_scale, y_scale)
     {
         var width = canvas.width;
@@ -39,6 +43,8 @@
         return [x, y];
     }
 
+    /// @function draw_coordinate_list
+    /// Given a list of coordinates, draws it on the specified canvas.
     function draw_coordinate_list(canvas, ctx, coordinate_list, x_offset, y_offset, x_scale, y_scale)
     {
         var is_first = true;
@@ -61,6 +67,7 @@
         ctx.fill();
     }
 
+    /// @function draw_geo_polygon
     function draw_geo_polygon(canvas, ctx, polygon_objects, x_offset, y_offset, x_scale, y_scale)
     {
         for (var coordinate_list of polygon_objects)
@@ -69,6 +76,7 @@
         }
     }
 
+    /// @function draw_region
     function draw_region(canvas, ctx, region_objects, heat_map, x_offset, y_offset, x_scale, y_scale)
     {
         for (var region_object of region_objects.features)
@@ -93,6 +101,7 @@
         }
     }
 
+    /// @function draw_world_map
     var draw_world_map = function(region_objects)
     {
         var canvas = document.getElementById("worldCanvas");
@@ -100,6 +109,7 @@
         draw_region(canvas, ctx, region_objects, countries, 20.0, 40.0, 1.0, 1.0);
     }
 
+    /// @function draw_us_canada_map
     var draw_us_canada_map = function(us_region_objects, canada_region_objects)
     {
         var canvas = document.getElementById("usCanadaCanvas");
@@ -108,6 +118,8 @@
         draw_region(canvas, ctx, canada_region_objects, canadian_provinces, -20.0, -50.0, 3.0, 3.4);
     }
 
+    /// @function get_map_data
+	/// Requests geo data.
     function get_map_data()
     {
         var map_store = {world:null, us:null, canada:null}; 
@@ -122,14 +134,20 @@
         });
     }
 
-    var process_heat_map = function(heat_map)
+    /// @function process_heat_map_from_straen_app
+	/// Processes the heat map data that is returned from straen app.
+    /// @param {Object} - JSON data listing locations and counts.
+	/// Processes the heat map data that is returned from straen app.
+    var process_heat_map_from_straen_app = function(heat_map)
     {
         for (var location_description in heat_map)
         {
             var location_array = location_description.split(',');
+
             if (location_array.length > 0)
             {
                 var country = location_array[location_array.length - 1].trim();
+
                 if (countries.indexOf(country) == -1)
                 {
                     countries.push(country);
@@ -139,6 +157,7 @@
                     if (country == "United States")
                     {
                         var state = location_array[location_array.length - 2].trim();
+
                         if (us_states.indexOf(state) == -1)
                         {
                             us_states.push(state);
@@ -147,6 +166,7 @@
                     else if (country == "Canada")
                     {
                         var province = location_array[location_array.length - 2].trim();
+
                         if (canadian_provinces.indexOf(province) == -1)
                         {
                             canadian_provinces.push(province);
@@ -158,15 +178,32 @@
         get_map_data();
     }
 
+    /// @function get_heat_map_data
+	/// Gets the heat map data from which service is connected.
     function get_heat_map_data()
     {
-		$.ajax({ type: 'GET', url: "http://127.0.0.1:8080/api/1.0/get_location_summary", cache: false, success: process_heat_map, dataType: "json" });
+        $.when(
+            //$.get("https://strava.com/api/1.0/login_status", function(result) { connected_to_strava = true; }),
+            $.get("https://straen-app.com/api/1.0/login_status", function(result) { connected_to_straen_app = (result == "Logged In"); }),
+        ).then(function() {
+            if (connected_to_strava)
+            {
+            }
+            else if (connected_to_straen_app)
+            {
+                $.ajax({ type: 'GET', url: "https://straen-app.com/api/1.0/get_location_summary", cache: false, success: process_heat_map_from_straen_app, dataType: "json" });
+            }
+            else
+            {
+                get_map_data();
+            }
+        });
     }
 
     get_heat_map_data();
 </script>
 
-<div align="center">
+<div id="maps" align="center">
     <canvas id="worldCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
     Your browser does not support the canvas element.
     </canvas>
@@ -175,8 +212,20 @@
     </canvas>
 </div>
 
-<div align="center">
+<div id="connections" align="center">
     <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
+</div>
+
+<div id="faq" align="left">
+    <h1>Frequently Asked Questions</h1>
+    <ul>
+    </ul>
+</div>
+
+<div id="footer" align="left">
+    <p>
+    Copyright (c) 2020 Michael J Simms
+    </p>
 </div>
 
 </body>
