@@ -129,8 +129,8 @@
             $.get("../data/us_states.geo.json", function(us) { map_store.us = us; }),
             $.get("../data/canada.geo.json", function(canada) { map_store.canada = canada; }),
         ).then(function() {
-            draw_world_map(JSON.parse(map_store.world));
-            draw_us_canada_map(JSON.parse(map_store.us), JSON.parse(map_store.canada));
+            draw_world_map(map_store.world);
+            draw_us_canada_map(map_store.us, map_store.canada);
         }, function() {
             alert("Failed to download map data.");
         });
