@@ -131,6 +131,8 @@
         ).then(function() {
             draw_world_map(JSON.parse(map_store.world));
             draw_us_canada_map(JSON.parse(map_store.us), JSON.parse(map_store.canada));
+        }, function() {
+            alert("Failed to download map data.");
         });
     }
 
