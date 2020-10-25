@@ -36,6 +36,14 @@ h2 {
 	font-size: 125%;
 }
 
+.settings select {
+	width: 250px;
+	margin: 5px 5px 5px 40px;
+    border: 0px;
+    font-family: "Arial Narrow", sans-serif;
+	font-size: 125%;
+}
+
 .faq div {
     margin: 0 auto;
 	background: white;

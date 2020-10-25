@@ -214,52 +214,57 @@
         });
     }
 
+    /// @function select_activities
+    /// Called when the user selects which type of activities are to be included on the map.
+    function select_activities()
+    {
+    }
+
     get_heat_map_data();
 </script>
 
 <section class="maps">
-<div align="center">
-    <canvas id="worldCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
-    Your browser does not support the canvas element.
-    </canvas>
-    <canvas id="usCanadaCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
-    Your browser does not support the canvas element.
-    </canvas>
-</div>
+    <div align="center">
+        <canvas id="worldCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
+            Your browser does not support the canvas element.
+        </canvas>
+        <canvas id="usCanadaCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
 </section>
 
 <section class="connections">
-<div align="center">
-    <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
-</div>
+    <div align="center">
+        <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
+    </div>
 </section>
 
 <section class="settings">
-<div>
-<h1>Settings</h1>
-<ul>
-    <li>Style: 
-    <li>Sports To Include: 
-    <li>Minimum Distance To Include: 
-</ul>
-</div>
+    <div>
+        <h1>Activities To Show</h1>
+        <select id="activities" onchange="return select_activities()">
+            <option value="all">All</option>
+            <option value="marathons">Marathons</option>
+        </select>
+    </div>
 </section>
 
 <section class="faq">
-<div>
-<h1>Frequently Asked Questions</h1>
-<ul>
-    <li>How much does this cost? <p>Nothing</p>
-    <li>How does it work? <p>Magic</p>
-    <li>What data do you store? <p>Nothing</p>
-</ul>
-</div>
+    <div>
+        <h1>Frequently Asked Questions</h1>
+        <ul>
+            <li>How much does this cost? <p>Nothing</p>
+            <li>How does it work? <p>Magic</p>
+            <li>What data do you store? <p>Nothing</p>
+        </ul>
+    </div>
 </section>
 
 <section class="footer">
-<div>
-<h2>Copyright (c) 2020 Michael J Simms</h2>
-</div>
+    <div>
+        <h2>Copyright (c) 2020 Michael J Simms</h2>
+    </div>
 </section>
 
 </body>
