@@ -224,7 +224,7 @@
 </script>
 
 <section class="maps">
-    <div>
+    <div style="text-align: center">
         <canvas id="worldCanvas" width="960" height="480" style="border:0px solid #c3c3c3;">
             Your browser does not support the canvas element.
         </canvas>
@@ -234,19 +234,20 @@
     </div>
 </section>
 
-<section class="connections">
-    <div>
-        <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
-    </div>
-</section>
-
 <section class="settings">
-    <div>
+    <div style="text-align: center">
         <h1>Activities To Show</h1>
         <select id="activities" onchange="return select_activities()">
             <option value="all">All</option>
             <option value="marathons">Marathons</option>
         </select>
+    </div>
+</section>
+
+<section class="connections">
+    <div style="text-align: center">
+        <h1>Connected Services</h1>
+        <a href="api/connect_to_strava"><img src="../images/connect_to_strava.png" width="256"></a>
     </div>
 </section>
 
