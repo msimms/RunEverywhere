@@ -1,21 +1,21 @@
 h1 {
-	color: #000000;
-	text-transform: uppercase;
-	text-align: center;
+    color: #000000;
+    text-transform: uppercase;
+    text-align: center;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 250%;
+    font-size: 250%;
 }
 
 h2 {
-	color: #000000;
-	text-transform: uppercase;
-	text-align: center;
-	font-size: 150%;
+    color: #000000;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 150%;
 }
 
 .maps div {
     margin: 0 auto;
-	background: white;
+    background: white;
 }
 
 .map canvas {
@@ -26,67 +26,67 @@ h2 {
 
 .connections div {
     margin: 0 auto;
-	background: white;
+    background: white;
 }
 
 .settings div {
     margin: 0 auto;
-	background: white;
+    background: white;
 }
 
 .settings ul {
-	list-style-type: none;
-	float: center;
-	text-transform: uppercase;
+    list-style-type: none;
+    float: center;
+    text-transform: uppercase;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 125%;
+    font-size: 125%;
 }
 
 .settings select {
-	width: 250px;
-	margin: 5px 5px 5px 40px;
+    width: 250px;
+    margin: 5px 5px 5px 40px;
     border: 0px;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 125%;
+    font-size: 125%;
 }
 
 .faq div {
     margin: 0 auto;
-	background: white;
+    background: white;
 }
 
 .faq ul {
-	list-style-type: none;
-	float: center;
-	text-transform: uppercase;
-	text-align: center;
+    list-style-type: none;
+    float: center;
+    text-transform: uppercase;
+    text-align: center;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 125%;
+    font-size: 125%;
 }
 
 .faq li {
-	float: center;
-	text-transform: uppercase;
+    float: center;
+    text-transform: uppercase;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 125%;
+    font-size: 125%;
     color: LightSlateGray;
 }
 
 .faq p {
-	float: center;
-	text-transform: uppercase;
+    float: center;
+    text-transform: uppercase;
     font-family: "Arial Narrow", sans-serif;
-	font-size: 90%;
+    font-size: 90%;
     color: DarkSlateGray;
 }
 
 .footer div {
-	background: white;
+    background: white;
 }
 
 .footer h2 {
-	text-transform: lowercase;
-	font-size: 80%;
+    text-transform: lowercase;
+    font-size: 80%;
     color: DarkSlateGray;
-	text-align: center;
+    text-align: center;
 }
