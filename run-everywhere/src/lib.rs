@@ -25,6 +25,8 @@ pub fn greet() {
 
 #[wasm_bindgen]
 pub fn analyze_gpx(s: &str) -> String {
+    utils::set_panic_hook();
+
     let mut analysis_report_str = String::new();
 
     let data = BufReader::new(s.as_bytes());
@@ -46,7 +48,7 @@ pub fn analyze_gpx(s: &str) -> String {
                 // Iterate through the track segments.
                 for trackseg in track.segments {
 
-                    // Iterate through the points.
+                    // Check the first point.
                     for point in trackseg.points {
                         let time = point.time.unwrap().timestamp();
                         let lat = point.point().y();
@@ -67,6 +69,45 @@ pub fn analyze_gpx(s: &str) -> String {
             alert("Error parsing GPX file.");
         }
     }
+
+    analysis_report_str
+}
+
+
+#[wasm_bindgen]
+pub fn analyze_tcx(s: &str) -> String {
+    utils::set_panic_hook();
+
+    let mut data = BufReader::new(s.as_bytes());
+    let res = tcx::read(&mut data);
+    let mut analyzer = location_analyzer::LocationAnalyzer::new();
+    let activities = res.activities.unwrap();
+
+    // A file can contain multiple activities.
+    for activity in activities.activities {
+
+        // Iterate through the laps.
+        for lap in activity.laps {
+
+            // Iterate through the tracks.
+            for track in lap.tracks {
+
+                // Iterate through each point.
+                for trackpoint in track.trackpoints {
+                    let time = trackpoint.time.timestamp() * 1000 + trackpoint.time.timestamp_subsec_millis() as i64;
+                    let position = trackpoint.position.unwrap();
+                    let altitude = trackpoint.altitude_meters.unwrap();
+
+                    analyzer.check_location(time as u64, position.latitude, position.longitude, altitude);
+                }
+            }
+        }
+    }
+
+    // Copy items to the final report.
+    let analysis_report_str = serde_json::json!({
+        "Location": analyzer.location
+    }).to_string();
 
     analysis_report_str
 }
