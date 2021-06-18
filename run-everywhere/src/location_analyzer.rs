@@ -22,6 +22,9 @@ impl LocationAnalyzer {
         self.activity_type = activity_type;
     }
 
-    pub fn check_location(&mut self, date_time_ms: u64, latitude: f64, longitude: f64, altitude: f64) {
+    pub fn check_location(&mut self, date_time_ms: u64, latitude: f64, longitude: f64) {
+    	let mut pt = graphics::Point::new();
+        pt.x = longitude;
+        pt.y = latitude;
     }
 }

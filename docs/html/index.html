@@ -26,7 +26,7 @@
 <script>
     var root_url = "https://run-everywhere.com";
     var connected_to_strava = false;
-    var connected_to_straen_app = false;
+    var connected_to_openworkout_app = false;
     var countries = [];
     var us_states = [];
     var canadian_provinces = [];
@@ -35,11 +35,11 @@
     /// Converts latitude and longitude to an x, y coordinate on the specified canvas.
     function latlon_to_xy(canvas, lat, lon, x_offset, y_offset, x_scale, y_scale)
     {
-        var width = canvas.width;
-        var height = canvas.height;
+        let width = canvas.width;
+        let height = canvas.height;
 
-        x = (x_offset + (((lon + 180.0) / 360.0) * width)) * x_scale;
-        y = (y_offset + (height - (((lat + 90.0) / 180.0) * height))) * y_scale;
+        let x = (x_offset + (((lon + 180.0) / 360.0) * width)) * x_scale;
+        let y = (y_offset + (height - (((lat + 90.0) / 180.0) * height))) * y_scale;
 
         return [x, y];
     }
@@ -48,7 +48,7 @@
     /// Given a list of coordinates, draws it on the specified canvas.
     function draw_coordinate_list(canvas, ctx, coordinate_list, x_offset, y_offset, x_scale, y_scale)
     {
-        var is_first = true;
+        let is_first = true;
 
         ctx.beginPath();
         for (coordinate of coordinate_list)
@@ -72,7 +72,7 @@
     /// @function draw_geo_polygon
     function draw_geo_polygon(canvas, ctx, polygon_objects, x_offset, y_offset, x_scale, y_scale)
     {
-        for (var coordinate_list of polygon_objects)
+        for (let coordinate_list of polygon_objects)
         {
             draw_coordinate_list(canvas, ctx, coordinate_list, x_offset, y_offset, x_scale, y_scale);
         }
@@ -81,9 +81,9 @@
     /// @function draw_region
     function draw_region(canvas, ctx, region_objects, heat_map, x_offset, y_offset, x_scale, y_scale)
     {
-        for (var region_object of region_objects.features)
+        for (let region_object of region_objects.features)
         {
-            var name = region_object.properties.name;
+            let name = region_object.properties.name;
 
             if (heat_map.indexOf(name) == -1)
                 ctx.fillStyle = '#c3c3c3';
@@ -107,16 +107,18 @@
     /// @function draw_world_map
     var draw_world_map = function(region_objects)
     {
-        var canvas = document.getElementById("worldCanvas");
-        var ctx = canvas.getContext("2d");
+        let canvas = document.getElementById("worldCanvas");
+        let ctx = canvas.getContext("2d");
+
         draw_region(canvas, ctx, region_objects, countries, 20.0, 40.0, 1.0, 1.0);
     }
 
     /// @function draw_us_canada_map
     var draw_us_canada_map = function(us_region_objects, canada_region_objects)
     {
-        var canvas = document.getElementById("usCanadaCanvas");
-        var ctx = canvas.getContext("2d");
+        let canvas = document.getElementById("usCanadaCanvas");
+        let ctx = canvas.getContext("2d");
+
         draw_region(canvas, ctx, us_region_objects, us_states, -20.0, -50.0, 3.0, 3.4);
         draw_region(canvas, ctx, canada_region_objects, canadian_provinces, -20.0, -50.0, 3.0, 3.4);
     }
@@ -125,7 +127,7 @@
 	/// Requests geo data.
     function get_map_data()
     {
-        var map_store = {world:null, us:null, canada:null}; 
+        var map_store = { world:null, us:null, canada:null };
 
         $.when(
             $.get(root_url + "/data/world.geo.json", function(world) { map_store.world = world; }),
@@ -146,19 +148,18 @@
         });
     }
 
-    /// @function process_heat_map_from_straen_app
-	/// Processes the heat map data that is returned from straen app.
+    /// @function process_heat_map_from_openworkout_app
+	/// Processes the heat map data that is returned from openworkout app.
     /// @param {Object} - JSON data listing locations and counts.
-	/// Processes the heat map data that is returned from straen app.
-    var process_heat_map_from_straen_app = function(heat_map)
+    var process_heat_map_from_openworkout_app = function(heat_map)
     {
-        for (var location_description in heat_map)
+        for (let location_description in heat_map)
         {
-            var location_array = location_description.split(',');
+            let location_array = location_description.split(',');
 
             if (location_array.length > 0)
             {
-                var country = location_array[location_array.length - 1].trim();
+                let country = location_array[location_array.length - 1].trim();
 
                 if (countries.indexOf(country) == -1)
                 {
@@ -168,7 +169,7 @@
                 {
                     if (country == "United States")
                     {
-                        var state = location_array[location_array.length - 2].trim();
+                        let state = location_array[location_array.length - 2].trim();
 
                         if (us_states.indexOf(state) == -1)
                         {
@@ -177,7 +178,7 @@
                     }
                     else if (country == "Canada")
                     {
-                        var province = location_array[location_array.length - 2].trim();
+                        let province = location_array[location_array.length - 2].trim();
 
                         if (canadian_provinces.indexOf(province) == -1)
                         {
@@ -196,14 +197,14 @@
     {
         $.when(
             //$.get("https://strava.com/api/1.0/login_status", function(result) { connected_to_strava = true; }),
-            $.get("https://straen-app.com/api/1.0/login_status", function(result) { connected_to_straen_app = (result == "Logged In"); }),
+            $.get("https://straen-app.com/api/1.0/login_status", function(result) { connected_to_openworkout_app = (result == "Logged In"); }),
         ).then(function() {
             if (connected_to_strava)
             {
             }
-            else if (connected_to_straen_app)
+            else if (connected_to_openworkout_app)
             {
-                $.ajax({ type: 'GET', url: "https://straen-app.com/api/1.0/get_location_summary", cache: false, success: process_heat_map_from_straen_app, dataType: "json" });
+                $.ajax({ type: 'GET', url: "https://straen-app.com/api/1.0/get_location_summary", cache: false, success: process_heat_map_from_openworkout_app, dataType: "json" });
             }
             else
             {
@@ -256,8 +257,8 @@
         <h1>Frequently Asked Questions</h1>
         <ul>
             <li>How much does this cost? <p>Nothing</p>
-            <li>How does it work? <p>Magic</p>
-            <li>What data do you store? <p>Nothing</p>
+            <li>How does it work? <p>This page is a combination of HTML, Javascript, CSS, and WebAssembly compiled from Rust.</p>
+            <li>What data do you store? <p>Nothing. All processing is done in the browser. No data leaves the local machine.</p>
         </ul>
     </div>
 </section>
