@@ -23,7 +23,14 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
 
-<script>
+<!-- Note the usage of `type=module` here as this is an ES6 module -->
+<script type="module">
+    import init, { greet, set_world_data, analyze_gpx, analyze_tcx, analyze_fit } from '../../run-everywhere/pkg/run_everywhere.js';
+
+    async function run() {
+        await init();
+    }
+
     var root_url = "https://run-everywhere.com";
     var connected_to_strava = false;
     var connected_to_openworkout_app = false;
@@ -135,11 +142,18 @@
             $.get(root_url + "/data/canada.geo.json", function(canada) { map_store.canada = canada; }),
         ).then(function() {
             if (typeof map_store.world === 'string' && map_store.world !== null)
+            {
+                set_world_data(map_store.world);
                 map_store.world = JSON.parse(map_store.world);
+            }
             if (typeof map_store.us === 'string' && map_store.us !== null)
+            {
                 map_store.us = JSON.parse(map_store.us);
+            }
             if (typeof map_store.canada === 'string' && map_store.canada !== null)
+            {
                 map_store.canada = JSON.parse(map_store.canada);
+            }
 
             draw_world_map(map_store.world);
             draw_us_canada_map(map_store.us, map_store.canada);
@@ -215,9 +229,9 @@
         });
     }
 
-    /// @function select_activities
+    /// @function on_select_activities
     /// Called when the user selects which type of activities are to be included on the map.
-    function select_activities()
+    function on_select_activities()
     {
     }
 
@@ -238,7 +252,7 @@
 <section class="settings">
     <div style="text-align: center">
         <h1>Activities To Show</h1>
-        <select id="activities" onchange="return select_activities()">
+        <select id="activities" onchange="return on_select_activities()">
             <option value="all">All</option>
             <option value="marathons">Marathons</option>
         </select>

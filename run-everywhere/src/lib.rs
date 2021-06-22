@@ -2,8 +2,9 @@
 
 extern crate gpx;
 
-mod utils;
+mod geojson;
 mod location_analyzer;
+mod utils;
 
 use wasm_bindgen::prelude::*;
 use std::io::BufReader;
@@ -14,7 +15,7 @@ use std::ffi::c_void;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-static mut WORLD_DATA: String = String::new();
+static GEO: geojson::GeoJson = geojson::GeoJson{ features: None };
 
 #[wasm_bindgen]
 extern {
@@ -29,8 +30,9 @@ pub fn greet() {
 #[wasm_bindgen]
 pub fn set_world_data(s: &str) {
     utils::set_panic_hook();
+
     unsafe {
-        WORLD_DATA = s.to_string();
+        //GEO.features
     }
 }
 
@@ -63,12 +65,10 @@ pub fn analyze_gpx(s: &str) -> String {
 
                     // Check the first point.
                     for point in trackseg.points {
-                        let time = point.time.unwrap().timestamp();
                         let lat = point.point().y();
                         let lon = point.point().x();
-                        let alt = point.elevation.unwrap();
 
-                        analyzer.check_location((time * 1000) as u64, lat, lon);
+                        analyzer.check_location(lat, lon);
                     }
                 }
             }
@@ -120,7 +120,6 @@ pub fn analyze_tcx(s: &str) -> String {
 
                                 // Iterate through each point.
                                 for trackpoint in track.trackpoints {
-                                    let time = trackpoint.time.timestamp() * 1000 + trackpoint.time.timestamp_subsec_millis() as i64;
 
                                     // Get the position, including altitude.
                                     let position = trackpoint.position;
@@ -128,7 +127,7 @@ pub fn analyze_tcx(s: &str) -> String {
                                         None => {
                                         }
                                         Some(position) => {
-                                            analyzer.check_location(time as u64, position.latitude, position.longitude);
+                                            analyzer.check_location(position.latitude, position.longitude);
                                         }
                                     }
                                 }
