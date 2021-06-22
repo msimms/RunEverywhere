@@ -15,7 +15,7 @@ use std::ffi::c_void;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-static GEO: geojson::GeoJson = geojson::GeoJson{ features: None };
+static mut GEO: geojson::GeoJson = geojson::GeoJson{ world_features: None, us_features: None };
 
 #[wasm_bindgen]
 extern {
@@ -32,7 +32,16 @@ pub fn set_world_data(s: &str) {
     utils::set_panic_hook();
 
     unsafe {
-        //GEO.features
+        GEO.load_world_data(s);
+    }
+}
+
+#[wasm_bindgen]
+pub fn set_us_data(s: &str) {
+    utils::set_panic_hook();
+
+    unsafe {
+        GEO.load_us_data(s);
     }
 }
 
